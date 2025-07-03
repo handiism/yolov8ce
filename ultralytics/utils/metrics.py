@@ -141,6 +141,7 @@ def bbox_iou(
                     alpha = v / (v - iou + (1 + eps))
                 return iou - (rho2 / c2 + v * alpha)  # CIoU
             elif EIoU:
+                alpha = 1.0
                 rho_w2 = ((b2_x2 - b2_x1) - (b1_x2 - b1_x1)) ** 2
                 rho_h2 = ((b2_y2 - b2_y1) - (b1_y2 - b1_y1)) ** 2
                 cw2 = torch.pow(cw ** 2 + eps, alpha)
