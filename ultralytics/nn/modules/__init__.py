@@ -60,6 +60,7 @@ from .block import (
     SCDown,
     TorchVision,
 )
+from .coordatt import CoordAtt
 from .conv import (
     CBAM,
     ChannelAttention,
@@ -179,4 +180,5 @@ __all__ = (
     "TorchVision",
     "Index",
     "A2C2f",
+    "CoordAtt",
 )
