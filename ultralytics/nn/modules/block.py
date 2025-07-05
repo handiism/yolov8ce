@@ -11,7 +11,7 @@ from ultralytics.utils.torch_utils import fuse_conv_and_bn
 
 from .conv import Conv, DWConv, GhostConv, LightConv, RepConv, autopad
 from .transformer import TransformerBlock
-from .coordatt import CoordAtt
+from .coordatt import CoordAtt,DynamicCoordAtt
 
 __all__ = (
     "DFL",
@@ -54,6 +54,7 @@ __all__ = (
     "SCDown",
     "TorchVision",
     "CoordAtt",
+    "DynamicCoordAtt",
 )
 
 

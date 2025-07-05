@@ -34,3 +34,16 @@ class CoordAtt(nn.Module):
 
         out = identity * a_h * a_w
         return out
+
+class DynamicCoordAtt(nn.Module):
+    def __init__(self, oup, reduction=32):
+        super().__init__()
+        self.coordatt = None
+        self.oup = oup
+        self.reduction = reduction
+
+    def forward(self, x):
+        if self.coordatt is None:
+            inp = x.shape[1]
+            self.coordatt = CoordAtt(inp, self.oup, self.reduction).to(x.device)
+        return self.coordatt(x)
