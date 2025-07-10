@@ -1,19 +1,39 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
+
+class h_sigmoid(nn.Module):
+    def __init__(self, inplace=True):
+        super(h_sigmoid, self).__init__()
+        self.relu = nn.ReLU6(inplace=inplace)
+
+    def forward(self, x):
+        return self.relu(x + 3) / 6
+
+
+class h_swish(nn.Module):
+    def __init__(self, inplace=True):
+        super(h_swish, self).__init__()
+        self.sigmoid = h_sigmoid(inplace=inplace)
+
+    def forward(self, x):
+        return x * self.sigmoid(x)
+
 
 class CoordAtt(nn.Module):
     def __init__(self, inp, oup, reduction=32):
-        super().__init__()
+        super(CoordAtt, self).__init__()
         self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
         self.pool_w = nn.AdaptiveAvgPool2d((1, None))
 
         mip = max(8, inp // reduction)
-        self.conv1 = nn.Conv2d(inp, mip, 1, 1, 0)
+        self.conv1 = nn.Conv2d(inp, mip, kernel_size=1, stride=1, padding=0)
         self.bn1 = nn.BatchNorm2d(mip)
-        self.act = nn.Hardswish()
+        self.act = h_swish()
 
-        self.conv_h = nn.Conv2d(mip, oup, 1, 1, 0)
-        self.conv_w = nn.Conv2d(mip, oup, 1, 1, 0)
+        self.conv_h = nn.Conv2d(mip, oup, kernel_size=1, stride=1, padding=0)
+        self.conv_w = nn.Conv2d(mip, oup, kernel_size=1, stride=1, padding=0)
 
     def forward(self, x):
         identity = x
@@ -34,6 +54,7 @@ class CoordAtt(nn.Module):
 
         out = identity * a_h * a_w
         return out
+
 
 class DynamicCoordAtt(nn.Module):
     def __init__(self, oup, reduction=32):
